@@ -1,64 +1,67 @@
 import string
 import random
 
-allowed = []
-password = ""
-cnt = 0
 
-lower = list(string.ascii_lowercase)
-upper = list(string.ascii_uppercase)
-numbers = list(string.digits)
-specialChars = '$ % ^ & * ( ) _ + = - ! ; : , . [ ] { }'.split()
+def generate_password(length, use_lower, use_upper, use_number, use_special):
+    # Define character sets
+    lower_chars = list(string.ascii_lowercase)
+    upper_chars = list(string.ascii_uppercase)
+    number_chars = list(string.digits)
+    special_chars = ['$', '%', '^', '&', '*',
+                     '(', ')', '_', '+', '=', '-', '!', ';', ':', ',', '.', '[', ']', '{', '}']
 
-random.shuffle(lower)
-random.shuffle(upper)
-random.shuffle(numbers)
-random.shuffle(specialChars)
+    # Initialize the list of allowed character sets and password
+    allowed_sets = []
+    password = ""
 
-length = int(input("Enter Password Length: "))
-lowerCase = input("LowerCase Allowed (y/n): ")
-upperCase = input("UpperCase Allowed (y/n): ")
-number = input("Number Allowed (y/n): ")
-special = input("Special Character Allowed (y/n): ")
+    # Check and add lower case characters
+    if use_lower:
+        allowed_sets.append(lower_chars)
+        password += random.choice(lower_chars)
 
-if lowerCase.lower() == 'y':
-    allowed.append(lower)
-    cnt += 1
-    password += random.choice(lower)
+    # Check and add upper case characters
+    if use_upper:
+        allowed_sets.append(upper_chars)
+        password += random.choice(upper_chars)
 
-if upperCase.lower() == 'y':
-    allowed.append(upper)
-    password += random.choice(upper)
-    cnt += 1
+    # Check and add numbers
+    if use_number:
+        allowed_sets.append(number_chars)
+        password += random.choice(number_chars)
 
-if number.lower() == 'y':
-    allowed.append(numbers)
-    cnt += 1
-    password += random.choice(numbers)
+    # Check and add special characters
+    if use_special:
+        allowed_sets.append(special_chars)
+        password += random.choice(special_chars)
 
-if special.lower() == 'y':
-    allowed.append(specialChars)
-    cnt += 1
-    password += random.choice(specialChars)
+    # Validate that at least one set is allowed
+    if not allowed_sets:
+        print("At least one character set must be allowed.")
+        return None
+
+    # Generate the remaining characters randomly
+    for _ in range(length - len(password)):
+        selected_set = random.choice(allowed_sets)
+        password += random.choice(selected_set)
+
+    # Shuffle the password characters for randomness
+    password_list = list(password)
+    random.shuffle(password_list)
+    password = ''.join(password_list)
+
+    return password
 
 
-if cnt == 0:
-    print("At least one Y is required")
-    exit()
+print("Password Generator")
+password_length = int(input("Enter Password Length: "))
+include_lower = input("Include Lowercase (y/n): ").lower() == 'y'
+include_upper = input("Include Uppercase (y/n): ").lower() == 'y'
+include_number = input("Include Numbers (y/n): ").lower() == 'y'
+include_special = input("Include Special Characters (y/n): ").lower() == 'y'
 
+generated_password = generate_password(
+    password_length, include_lower, include_upper, include_number, include_special)
 
-def selectRandTypeInd():
-    type = random.randint(0, len(allowed)-1)
-    ind = random.randint(0, len(allowed[type])-1)
-    return allowed[type][ind]
-
-
-for _ in range(length-cnt):
-    password += selectRandTypeInd()
-
-password = list(password)
-random.shuffle(password)
-password = "".join(password[:length])
-
-print("-"*20, "Password", "-"*20)
-print(password)
+if generated_password:
+    print("-" * 20, "Password", "-" * 20)
+    print(generated_password)

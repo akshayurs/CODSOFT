@@ -1,4 +1,5 @@
 import json
+
 todos = []
 id = 0
 
@@ -21,18 +22,19 @@ def load():
 
 
 def display():
-    print("-"*20)
+    print("-" * 20)
     if len(todos) == 0:
         print(" ---  Empty  ---")
-    for index, item in enumerate(todos):
-        print(f"{index+1}. {item['text']}")
-    print("-"*20)
+    else:
+        for index, item in enumerate(todos):
+            print(f"{index + 1}. {item['text']}")
+    print("-" * 20)
 
 
 def add():
     global id
     text = input("Enter todo text: ")
-    newTodo = {"id": id+1, "text": text}
+    newTodo = {"id": id + 1, "text": text}
     id += 1
     todos.append(newTodo)
     print("* New todo added")
@@ -42,28 +44,35 @@ def add():
 def edit():
     display()
     ind = int(input("Enter the number of Todo: "))
-    if ind > 0 and ind <= len(todos):
-        text = input("Enter todo: ")
-        todos[ind-1]['text'] = text
+    if 1 <= ind <= len(todos):
+        text = input("Enter updated todo: ")
+        todos[ind - 1]['text'] = text
     else:
         print("*** Invalid Number")
 
 
 def delete():
     display()
-    ind = int(input("Enter the number of Todo: "))
-    if ind > 0 and ind <= len(todos):
-        todos.pop(ind-1)
-        print("* Deleted")
+    ind = int(input("Enter the number of Todo to delete: "))
+    if 1 <= ind <= len(todos):
+        deleted_todo = todos.pop(ind - 1)
+        print(f"* Deleted: {deleted_todo['text']}")
         store()
     else:
         print("Invalid Number")
 
 
 load()
+
 while True:
-    opt = input(
-        "\n1.List All Todos\n2.Add New Todo\n3.Edit Todo\n4.Delete Todo\n5.Exit\nEnter the option number:")
+    print("\nOptions:")
+    print("1. List All Todos")
+    print("2. Add New Todo")
+    print("3. Edit Todo")
+    print("4. Delete Todo")
+    print("5. Exit")
+    opt = input("Enter the option number: ")
+
     if opt == '1':
         display()
     elif opt == '2':
@@ -74,3 +83,7 @@ while True:
         delete()
     elif opt == '5':
         break
+    else:
+        print("Invalid option. Please choose a valid option (1-5).")
+
+print("Goodbye!")
